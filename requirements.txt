@@ -1,0 +1,14 @@
+langchain
+langchain-openai
+langchain-community
+python-dotenv
+openai
+langgraph
+email
+beautifulsoup4
+langsmith
+msal
+google-auth
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2

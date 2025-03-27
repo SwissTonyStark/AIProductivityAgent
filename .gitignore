@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Environments
+.env
+.venv/
+venv/
+ENV/
+
+# Mac/Windows system files
+.DS_Store
+Thumbs.db
+
+# Jupyter & VS Code
+.ipynb_checkpoints
+.vscode/
+*.code-workspace
+
+# Token and credential files
+token.pickle
+credentials.json
