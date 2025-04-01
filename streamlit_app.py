@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import HumanMessage
@@ -9,13 +10,12 @@ from agent.config import (
     AZURE_OPENAI_ENDPOINT,
     AZURE_OPENAI_API_VERSION,
     AZURE_OPENAI_DEPLOYMENT_NAME,
-    TAVILY_API_KEY
 )
 
 # --- Streamlit page config ---
 st.set_page_config(page_title="Productivity Agent", page_icon="🤖", layout="wide")
 st.title("🤖 AI Productivity Agent")
-st.markdown("Ask me anything about your emails or work context.")
+st.markdown("Ask me anything about your emails, create calendar events, or work context.")
 
 # --- Initialize agent ---
 @st.cache_resource
@@ -45,3 +45,12 @@ if user_input:
         ):
             response = step["messages"][-1].content
             st.chat_message("assistant").markdown(response)
+
+
+# --- Additional Enhancements ---
+st.sidebar.title("Assistant Features")
+st.sidebar.markdown("""
+- **Analyze Emails**: Get the sentiment and tasks from your emails.
+- **Create Events**: Add events to Google Calendar directly.
+- **Smart Filtering**: Search emails by keyword or sentiment.
+""")

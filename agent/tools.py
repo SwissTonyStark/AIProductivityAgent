@@ -1,7 +1,10 @@
+import os
 from langchain.tools import tool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from utils.email_parser import parse_email
 from utils.gmail_client import GmailClient
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
 
 # --- Tavily Search Tool ---
 @tool
@@ -51,10 +54,25 @@ def search_gmail_by_keyword(keyword: str, n: int = 15) -> str:
         f"From: {e['from']}\nSubject: {e['subject']}\nSnippet: {e['snippet']}" for e in emails
     ])
 
+# --- Google Calendar: Create Event ---
+@tool
+def create_google_event(summary: str, description: str, start_time: str, end_time: str) -> str:
+    """
+    Creates an event in Google Calendar using the provided parameters.
+    """
+    from datetime import datetime
+    start_dt = datetime.fromisoformat(start_time)
+    end_dt = datetime.fromisoformat(end_time)
+
+    client = GoogleCalendarClient()
+    response = client.create_event(summary, description, start_dt, end_dt)
+    return response
+
 # --- List of tools for the agent ---
 TOOLS = [
     tavily_tool,
     parse_email_tool,
     get_gmail_summary,
     search_gmail_by_keyword,
+    create_google_event,  # Add the Google calendar event tool
 ]

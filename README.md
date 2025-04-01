@@ -1,3 +1,4 @@
+
 # ProductivityAgent 📬🤖
 
 An AI-powered personal assistant that integrates with your email and messaging tools to analyze communication, suggest smart actions, and gradually act more like you.
@@ -14,6 +15,11 @@ An AI-powered personal assistant that integrates with your email and messaging t
   - [▶️ How to Run](#️-how-to-run)
   - [📅 Development Diary](#-development-diary)
   - [💡 Future Ideas](#-future-ideas)
+  - [🤖 How to Interact with the Agent](#-how-to-interact-with-the-agent)
+    - [Ask about your emails:](#ask-about-your-emails)
+    - [Request task extraction:](#request-task-extraction)
+    - [Analyze email sentiment:](#analyze-email-sentiment)
+    - [Filter emails:](#filter-emails)
   - [📬 Contact](#-contact)
 
 ---
@@ -40,10 +46,10 @@ This is a long-term assistant designed to evolve.
 | Gmail integration             | ✅ Done       | Reads recent emails and searches by keyword |
 | LangChain Tools               | ✅ Done       | Agent can call tools like `get_gmail_summary` or `search_gmail_by_keyword` |
 | Email parsing (metadata)      | ✅ Done       | Extracts structured data from raw emails |
-| LangSmith tracking            | ✅ Done       | Agent is tracked for debugging and improvement |
-| Outlook integration           | 🚧 Blocked    | Waiting for IT admin approval |
+| Sentiment analysis            | ✅ Done       | Analyzes sentiment in email subject and body |
 | Task extraction (from emails) | ⏳ Upcoming   | NLP analysis for task detection |
 | Agenda generator              | ⏳ Upcoming   | Based on calendar/emails before meetings |
+| Outlook integration           | 🚧 Blocked    | Waiting for IT admin approval |
 
 ---
 
@@ -53,20 +59,21 @@ This is a long-term assistant designed to evolve.
 ProductivityAgent/
 │
 ├── agent/
-│   ├── agent_runner.py       # Main LangChain agent logic
-│   ├── tools.py              # LangChain tools used by the agent
-│   ├── config.py             # API Keys and Env config
+│   ├── agent_runner.py         # Main LangChain agent logic
+│   ├── tools.py                # LangChain tools used by the agent
+│   ├── config.py               # API Keys and Env config
 │
 ├── utils/
-│   ├── gmail_client.py       # Gmail API logic
-│   ├── outlook_client.py     # Outlook integration (in progress)
-│   ├── email_parser.py       # Utility to parse raw email strings
+│   ├── gmail_client.py         # Gmail API logic
+│   ├── outlook_client.py       # Outlook integration (in progress)
+│   ├── email_parser.py         # Utility to parse raw email strings
 │
-├── test_gmail.py             # Run standalone Gmail test
-├── test_outlook.py           # Run standalone Outlook test
-├── main.py                   # Entry point for the agent
-├── .env                      # Credentials (excluded from git)
-├── credentials.json          # Gmail OAuth2 config
+├── test_gmail.py               # Run standalone Gmail test
+├── test_outlook.py             # Run standalone Outlook test
+├── main.py                     # Entry point for the agent
+├── .env                        # Credentials (excluded from git)
+├── credentials_gmail_api.json  # Gmail OAuth2 config
+├── credentials_calendar_api.json  # Gmail OAuth2 config
 ├── requirements.txt
 ```
 
@@ -95,6 +102,7 @@ AZURE_OPENAI_API_VERSION=...
 
 | Date        | Update                                                                 |
 |-------------|------------------------------------------------------------------------|
+| 2025-04-01 | ✅ Integrated sentiment analysis for emails, classified emails based on sender and urgency, and added task extraction (in progress) |
 | 2025-03-27 | 🧠 Project recap, cleaned tools, LangSmith enabled, and Gmail integrated |
 | 2025-03-27  | ✅ Gmail client working with OAuth and token.pickle persistency         |
 | 2025-03-26  | 🧪 Gmail API authorization flow setup completed                         |
@@ -110,6 +118,40 @@ AZURE_OPENAI_API_VERSION=...
 - Automatic tagging and smart archiving of emails.
 - Conversational agent interface (voice/chat/web).
 - Priority detection + meeting preparation features.
+
+---
+
+## 🤖 How to Interact with the Agent
+
+The **ProductivityAgent** is designed to assist with managing your emails and tasks. Below are some example queries you can use to interact with the agent:
+
+### Ask about your emails:
+You can ask the agent to summarize your recent emails, search emails by keyword, or analyze them for sentiment.
+
+**Example queries:**
+- "What are the latest emails about job opportunities?"
+- "What are the recent emails about project updates?"
+
+### Request task extraction:
+Ask the agent to identify tasks from your emails and generate action items.
+
+**Example queries:**
+- "Are there any tasks I need to do today?"
+- "What action items are mentioned in the last email?"
+
+### Analyze email sentiment:
+The agent can determine if the sentiment in your emails is positive, negative, or neutral.
+
+**Example queries:**
+- "What’s the sentiment of the last few emails?"
+- "Analyze the sentiment of the email from my boss."
+
+### Filter emails:
+You can ask the agent to filter emails by specific criteria such as sender, keywords, or date.
+
+**Example queries:**
+- "Show me emails from Google."
+- "Find emails from March with the word 'urgent'."
 
 ---
 

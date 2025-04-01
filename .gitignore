@@ -20,4 +20,5 @@ Thumbs.db
 
 # Token and credential files
 token.pickle
-credentials.json
+credentials_gmail_api.json
+credentials_calendar_api.json
