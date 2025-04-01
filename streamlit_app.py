@@ -3,13 +3,13 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import HumanMessage
 from langchain_openai import AzureChatOpenAI
-
 from agent.tools import TOOLS
 from agent.config import (
     AZURE_OPENAI_API_KEY,
     AZURE_OPENAI_ENDPOINT,
     AZURE_OPENAI_API_VERSION,
     AZURE_OPENAI_DEPLOYMENT_NAME,
+    TAVILY_API_KEY
 )
 
 # --- Streamlit page config ---

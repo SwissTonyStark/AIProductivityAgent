@@ -43,7 +43,7 @@ class GmailClient:
 
         self.service = build("gmail", "v1", credentials=self.creds)
 
-    def get_recent_emails(self, max_results: int = 5) -> List[dict]:
+    def get_recent_emails(self, max_results: int = 15) -> List[dict]:
         """Fetches recent emails with basic metadata (subject, sender, snippet)."""
         results = (
             self.service.users()
@@ -74,7 +74,7 @@ class GmailClient:
 
         return emails
     
-    def search_emails(self, query: str, max_results: int = 5) -> List[dict]:
+    def search_emails(self, query: str, max_results: int = 15) -> List[dict]:
         results = self.service.users().messages().list(userId='me', q=query, maxResults=max_results).execute()
         messages = results.get('messages', [])
 

@@ -4,7 +4,18 @@ from utils.email_parser import parse_email
 from utils.gmail_client import GmailClient
 
 # --- Tavily Search Tool ---
-tavily_tool = TavilySearchResults(max_results=2)
+@tool
+def tavily_tool(query: str, max_results: int = 2):
+    """
+    Uses Tavily to perform a search and returns the results.
+    """
+    tavily_api_key = os.getenv("TAVILY_API_KEY")
+    if not tavily_api_key:
+        raise ValueError("TAVILY_API_KEY is missing from the environment variables.")
+    # Initialize TavilySearchResults with the API key
+    search_tool = TavilySearchResults(max_results=max_results, tavily_api_key=tavily_api_key)
+    search_results = search_tool.search(query)  # Assuming the search method exists
+    return search_results
 
 # --- Email Parser Tool ---
 @tool
@@ -17,7 +28,7 @@ def parse_email_tool(raw_email: str) -> dict:
 
 # --- Gmail: Get last N emails ---
 @tool
-def get_gmail_summary(n: int = 5) -> str:
+def get_gmail_summary(n: int = 15) -> str:
     """
     Fetches the last N emails and returns a summary with sender and subject.
     """
@@ -27,7 +38,7 @@ def get_gmail_summary(n: int = 5) -> str:
 
 # --- Gmail: Search by keyword ---
 @tool
-def search_gmail_by_keyword(keyword: str, n: int = 5) -> str:
+def search_gmail_by_keyword(keyword: str, n: int = 15) -> str:
     """
     Searches Gmail for emails containing the given keyword.
     Returns up to N matches with sender and subject.
