@@ -3,8 +3,9 @@ from langchain.tools import tool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from utils.email_parser import parse_email
 from utils.gmail_client import GmailClient
-from langchain.prompts import PromptTemplate
+from utils.google_calendar_client import GoogleCalendarClient
 from langchain.chains import LLMChain
+from datetime import datetime
 
 # --- Tavily Search Tool ---
 @tool
@@ -60,7 +61,7 @@ def create_google_event(summary: str, description: str, start_time: str, end_tim
     """
     Creates an event in Google Calendar using the provided parameters.
     """
-    from datetime import datetime
+    
     start_dt = datetime.fromisoformat(start_time)
     end_dt = datetime.fromisoformat(end_time)
 
