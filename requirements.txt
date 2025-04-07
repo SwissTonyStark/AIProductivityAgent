@@ -1,19 +1,37 @@
-langchain
-langchain-openai
-langchain-community
-python-dotenv
-openai
-langgraph
-email
-beautifulsoup4
-langsmith
-msal
-google-auth
-google-api-python-client
-google-auth-oauthlib
-google-auth-httplib2
-streamlit
-google-api-python-client
-google-auth-httplib2
-altair
-pandas
+# Core Dependencies
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-community>=0.1.0
+langchain-openai>=0.0.5
+streamlit>=1.31.0
+python-dotenv>=1.0.0
+
+# Google API Dependencies
+google-auth-oauthlib>=1.0.0
+google-auth-httplib2>=0.1.0
+google-api-python-client>=2.0.0
+
+# Azure OpenAI Dependencies
+openai>=1.12.0
+azure-core>=1.29.5
+azure-identity>=1.15.0
+
+# Infrastructure Dependencies
+aiohttp>=3.9.0
+PyJWT>=2.8.0
+cryptography>=42.0.0
+redis>=5.0.0
+aioredis>=2.0.0
+asyncio>=3.4.3
+uvicorn>=0.27.0
+fastapi>=0.109.0
+pydantic>=2.6.0
+
+# Development Dependencies
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+black>=24.1.0
+isort>=5.13.0
+mypy>=1.8.0
+pylint>=3.0.0

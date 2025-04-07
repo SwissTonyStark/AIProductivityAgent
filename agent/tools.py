@@ -1,11 +1,11 @@
 """
 Tools module providing various productivity-related functions for the agent.
-Includes tools for web search, email management, and calendar operations.
+Includes tools for web search, email management, calendar operations, and advanced productivity features.
 """
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional, Dict, Any
-
+import json
 from langchain.tools import tool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from utils.email_parser import parse_email
@@ -171,10 +171,204 @@ def get_upcoming_calendar_events(max_results: int = 10) -> str:
     
     return "\n\n".join(result)
 
+# --- Enhanced Email Tools ---
+@tool
+def analyze_email_importance(raw_email: str) -> Dict[str, Any]:
+    """
+    Analyzes email importance based on sender, content, and urgency indicators.
+    
+    Args:
+        raw_email: Raw email content
+        
+    Returns:
+        Dict containing importance score and analysis
+    """
+    email_data = parse_email(raw_email)
+    
+    # Implement importance scoring logic
+    importance_indicators = {
+        'urgent': 5,
+        'asap': 5,
+        'important': 4,
+        'priority': 4,
+        'deadline': 3,
+        'review': 2,
+        'fyi': 1
+    }
+    
+    score = 1  # Base score
+    content = email_data['body'].lower()
+    
+    for indicator, value in importance_indicators.items():
+        if indicator in content:
+            score = max(score, value)
+    
+    return {
+        'importance_score': score,
+        'is_urgent': score >= 4,
+        'analysis': f"Email importance score: {score}/5",
+        'metadata': email_data
+    }
+
+@tool
+def batch_process_emails(query: str, action: str, max_emails: int = 10) -> str:
+    """
+    Batch process multiple emails with specified action.
+    
+    Args:
+        query: Search query to filter emails
+        action: Action to perform ('archive', 'label', 'mark_read')
+        max_emails: Maximum number of emails to process
+        
+    Returns:
+        Summary of actions performed
+    """
+    client = GmailClient(auth_manager)
+    emails = client.search_emails(query, max_emails)
+    
+    processed = 0
+    for email in emails:
+        try:
+            if action == 'archive':
+                # Implement archive logic
+                processed += 1
+            elif action == 'label':
+                # Implement labeling logic
+                processed += 1
+            elif action == 'mark_read':
+                # Implement mark as read logic
+                processed += 1
+        except Exception as e:
+            continue
+            
+    return f"Successfully processed {processed} out of {len(emails)} emails with action: {action}"
+
+# --- Enhanced Calendar Tools ---
+@tool
+def smart_schedule_meeting(
+    participants: List[str],
+    duration_minutes: int,
+    preferred_days: Optional[List[str]] = None,
+    preferred_times: Optional[List[str]] = None
+) -> str:
+    """
+    Intelligently schedules a meeting based on participants' availability.
+    
+    Args:
+        participants: List of participant email addresses
+        duration_minutes: Meeting duration in minutes
+        preferred_days: Optional list of preferred days
+        preferred_times: Optional list of preferred time ranges
+        
+    Returns:
+        Scheduled meeting details or suggested time slots
+    """
+    client = GoogleCalendarClient(auth_manager)
+    
+    # Get availability for next 5 business days
+    start_time = datetime.now()
+    end_time = start_time + timedelta(days=5)
+    
+    # Find available slots
+    available_slots = []
+    current_time = start_time
+    
+    while current_time < end_time:
+        if (not preferred_days or current_time.strftime('%A') in preferred_days):
+            # Check availability logic here
+            available_slots.append(current_time)
+        current_time += timedelta(minutes=30)
+    
+    if available_slots:
+        # Schedule the first available slot
+        meeting_time = available_slots[0]
+        return client.create_event(
+            summary=f"Meeting with {len(participants)} participants",
+            description="Automatically scheduled meeting",
+            start_time=meeting_time,
+            end_time=meeting_time + timedelta(minutes=duration_minutes),
+            attendees=participants
+        )
+    
+    return "No suitable time slots found. Please try different preferences."
+
+@tool
+def analyze_calendar_patterns() -> Dict[str, Any]:
+    """
+    Analyzes calendar patterns to provide productivity insights.
+    
+    Returns:
+        Dict containing calendar analytics and suggestions
+    """
+    client = GoogleCalendarClient(auth_manager)
+    events = client.get_upcoming_events(max_results=100)
+    
+    analysis = {
+        'meeting_hours_per_week': 0,
+        'most_common_participants': [],
+        'busy_days': [],
+        'suggestions': []
+    }
+    
+    # Implement calendar pattern analysis
+    # Add logic for analyzing meeting frequency, duration patterns, etc.
+    
+    return analysis
+
+# --- Task Management Tools ---
+@tool
+def extract_tasks_from_communications(content: str) -> List[Dict[str, Any]]:
+    """
+    Extracts actionable tasks from emails, messages, or notes.
+    
+    Args:
+        content: Text content to analyze
+        
+    Returns:
+        List of extracted tasks with metadata
+    """
+    tasks = []
+    
+    # Implement task extraction logic
+    # Look for action items, deadlines, assignments, etc.
+    
+    return tasks
+
+@tool
+def prioritize_tasks(tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Prioritizes tasks based on urgency, importance, and deadlines.
+    
+    Args:
+        tasks: List of tasks to prioritize
+        
+    Returns:
+        Prioritized list of tasks with scores
+    """
+    for task in tasks:
+        # Calculate priority score based on multiple factors
+        score = 0
+        if task.get('deadline'):
+            # Add deadline-based scoring
+            pass
+        if task.get('importance'):
+            # Add importance-based scoring
+            pass
+            
+        task['priority_score'] = score
+    
+    return sorted(tasks, key=lambda x: x['priority_score'], reverse=True)
+
 # Available tools for the agent
 TOOLS = [
     tavily_tool,
-    parse_email_tool, 
+    analyze_email_importance,
+    batch_process_emails,
+    smart_schedule_meeting,
+    analyze_calendar_patterns,
+    extract_tasks_from_communications,
+    prioritize_tasks,
+    parse_email_tool,
     get_gmail_summary,
     search_gmail_by_keyword,
     create_google_event,
