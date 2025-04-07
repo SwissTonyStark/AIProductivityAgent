@@ -11,6 +11,10 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from utils.email_parser import parse_email
 from utils.gmail_client import GmailClient
 from utils.google_calendar_client import GoogleCalendarClient
+from agent.auth_manager import AuthManager
+
+# Initialize authentication manager
+auth_manager = AuthManager()
 
 # --- Web Search Tool ---
 @tool
@@ -61,8 +65,8 @@ def get_gmail_summary(n: int = 15) -> str:
         Formatted string containing sender and subject for each email
     """
     try:
-        client = GmailClient()
-        emails = client.get_recent_emails(max_results=max_results)
+        client = GmailClient(auth_manager)
+        emails = client.get_recent_emails(max_results=n)
         
         if not emails:
             return "No recent emails found."
@@ -74,7 +78,9 @@ def get_gmail_summary(n: int = 15) -> str:
             
         return "\n\n".join(email_summaries)
     except Exception as e:
-        return f"Error retrieving Gmail messages: {str(e)}"
+        import traceback
+        error_details = traceback.format_exc()
+        return f"Error retrieving Gmail messages: {str(e)}\nDetails: {error_details}"
 
 @tool
 def search_gmail_by_keyword(keyword: str, n: int = 15) -> str:
@@ -88,15 +94,20 @@ def search_gmail_by_keyword(keyword: str, n: int = 15) -> str:
     Returns:
         Formatted string containing matching email details
     """
-    client = GmailClient()
-    emails = client.search_emails(keyword, max_results=n)
-    if not emails:
-        return f"No emails found containing '{keyword}'."
-    
-    return "\n\n".join([
-        f"From: {e['from']}\nSubject: {e['subject']}\nSnippet: {e['snippet']}" 
-        for e in emails
-    ])
+    try:
+        client = GmailClient(auth_manager)
+        emails = client.search_emails(keyword, max_results=n)
+        if not emails:
+            return f"No emails found containing '{keyword}'."
+        
+        return "\n\n".join([
+            f"From: {e['from']}\nSubject: {e['subject']}\nSnippet: {e['snippet']}" 
+            for e in emails
+        ])
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        return f"Error searching Gmail: {str(e)}\nDetails: {error_details}"
 
 # --- Calendar Tools ---
 @tool
@@ -125,7 +136,7 @@ def create_google_event(
     start_dt = datetime.fromisoformat(start_time)
     end_dt = datetime.fromisoformat(end_time)
 
-    client = GoogleCalendarClient()
+    client = GoogleCalendarClient(auth_manager)
     return client.create_event(
         summary=summary,
         description=description,
@@ -146,7 +157,7 @@ def get_upcoming_calendar_events(max_results: int = 10) -> str:
     Returns:
         Formatted string containing upcoming event details
     """
-    client = GoogleCalendarClient()
+    client = GoogleCalendarClient(auth_manager)
     events = client.get_upcoming_events(max_results=max_results)
     
     if not events:

@@ -1,26 +1,23 @@
 
-# ProductivityAgent 📬🤖
-
-An AI-powered personal assistant that integrates with your email and messaging tools to analyze communication, suggest smart actions, and gradually act more like you.
+An AI-powered personal assistant that integrates with your email, calendar, and messaging tools to analyze communication, suggest smart actions, and gradually act more like you.
 
 ---
 
 ## 🧭 Table of Contents
 
-- [ProductivityAgent 📬🤖](#productivityagent-)
-  - [🧭 Table of Contents](#-table-of-contents)
-  - [🧠 Introduction](#-introduction)
-  - [🛠️ Current Capabilities](#️-current-capabilities)
-  - [📂 Project Structure](#-project-structure)
-  - [▶️ How to Run](#️-how-to-run)
-  - [📅 Development Diary](#-development-diary)
-  - [💡 Future Ideas](#-future-ideas)
-  - [🤖 How to Interact with the Agent](#-how-to-interact-with-the-agent)
-    - [Ask about your emails:](#ask-about-your-emails)
-    - [Request task extraction:](#request-task-extraction)
-    - [Analyze email sentiment:](#analyze-email-sentiment)
-    - [Filter emails:](#filter-emails)
-  - [📬 Contact](#-contact)
+- [🧭 Table of Contents](#-table-of-contents)
+- [🧠 Introduction](#-introduction)
+- [🛠️ Current Capabilities](#️-current-capabilities)
+- [📂 Project Structure](#-project-structure)
+- [▶️ How to Run](#️-how-to-run)
+- [📅 Development Diary](#-development-diary)
+- [💡 Future Ideas](#-future-ideas)
+- [🤖 How to Interact with the Agent](#-how-to-interact-with-the-agent)
+  - [Ask about your emails:](#ask-about-your-emails)
+  - [Request task extraction:](#request-task-extraction)
+  - [Analyze email sentiment:](#analyze-email-sentiment)
+  - [Filter emails:](#filter-emails)
+- [📬 Contact](#-contact)
 
 ---
 
@@ -54,7 +51,6 @@ This is a long-term assistant designed to evolve.
 ---
 
 ## 📂 Project Structure
-
 ```bash
 ProductivityAgent/
 │

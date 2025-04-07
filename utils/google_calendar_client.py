@@ -1,89 +1,19 @@
 """
 Google Calendar Client module that provides calendar operations through a unified class interface.
-This module handles authentication and calendar operations for use with LangChain tools.
+This module uses the AuthManager for authentication and calendar operations.
 """
-import os
-import pickle
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
-
-# Scopes required for Google Calendar API
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+from agent.auth_manager import AuthManager
 
 class GoogleCalendarClient:
     """A client class for interacting with Google Calendar API."""
     
-    def __init__(self):
-        """Initialize the Google Calendar client with authenticated service."""
-        self.service = self._authenticate()
-    
-    def _authenticate(self):
-        """
-        Handle Google Calendar authentication flow.
-        
-        Ensures fresh tokens are obtained when required by:
-        1. Using existing valid credentials if available
-        2. Refreshing expired credentials if possible
-        3. Initiating a new auth flow if credentials are invalid or revoked
-        """
-        creds = None
-        token_path = 'token_calendar.pickle'
-        
-        # Load existing token if available
-        if os.path.exists(token_path):
-            try:
-                with open(token_path, 'rb') as token:
-                    creds = pickle.load(token)
-                print("Loaded existing credentials")
-            except Exception as e:
-                print(f"Error loading credentials: {e}")
-                creds = None
-
-        # Check if credentials need to be refreshed or recreated
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                try:
-                    print("Refreshing expired credentials")
-                    creds.refresh(Request())
-                except Exception as e:
-                    print(f"Error refreshing credentials: {e}")
-                    # Force new token creation if refresh fails
-                    creds = None
-            
-            # If credentials are still invalid, create new ones
-            if not creds or not creds.valid:
-                print("Obtaining new credentials")
-                try:
-                    # Try with credentials_calendar_api.json first
-                    if os.path.exists('credentials_calendar_api.json'):
-                        flow = InstalledAppFlow.from_client_secrets_file(
-                            'credentials_calendar_api.json', SCOPES)
-                    # Fall back to credentials_gmail_api.json if calendar-specific file not found
-                    elif os.path.exists('credentials_gmail_api.json'):
-                        print("Using Gmail API credentials for Calendar authentication")
-                        flow = InstalledAppFlow.from_client_secrets_file(
-                            'credentials_gmail_api.json', SCOPES)
-                    else:
-                        raise FileNotFoundError("No credentials file found")
-                    
-                    creds = flow.run_local_server(port=0)
-                except Exception as e:
-                    raise RuntimeError(f"Failed to authenticate: {e}")
-
-            # Save valid credentials for future use
-            try:
-                with open(token_path, 'wb') as token:
-                    pickle.dump(creds, token)
-                    print("Credentials saved successfully")
-            except Exception as e:
-                print(f"Warning: Could not save credentials: {e}")
-
-        return build('calendar', 'v3', credentials=creds)
+    def __init__(self, auth_manager: AuthManager):
+        """Initialize the Google Calendar client with an AuthManager instance."""
+        self.auth_manager = auth_manager
+        self.service = self.auth_manager.get_calendar_service()
 
     def create_event(self, 
                     summary: str, 

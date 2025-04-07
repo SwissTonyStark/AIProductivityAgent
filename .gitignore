@@ -19,7 +19,7 @@ Thumbs.db
 *.code-workspace
 
 # Token and credential files
-token.pickle
+token_gmail.pickle
 token_calendar.pickle
 credentials_gmail_api.json
 credentials_calendar_api.json
