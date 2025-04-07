@@ -19,24 +19,15 @@ def get_auth_manager():
 
 auth_manager = get_auth_manager()
 
-# Check authentication status
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-# Authentication button
-if not st.session_state.authenticated:
-    if st.button("Authenticate"):
-        if auth_manager.authenticate_all():
-            st.session_state.authenticated = True
-            st.success("Authentication successful!")
-            st.rerun()
-        else:
-            st.error("Authentication failed. Please try again.")
-    st.stop()
-
 # --- Initialize agent ---
 @st.cache_resource
 def initialize_agent():
+    # Authenticate all services
+    if not auth_manager.authenticate_all():
+        st.error("Failed to authenticate services. Please check your credentials and try again.")
+        st.stop()
+    
+    # Initialize Azure OpenAI model
     azure_config = auth_manager.get_azure_openai_config()
     model = AzureChatOpenAI(
         azure_endpoint=azure_config["endpoint"],
@@ -48,7 +39,9 @@ def initialize_agent():
     memory = MemorySaver()
     return create_react_agent(model, TOOLS, checkpointer=memory)
 
-agent = initialize_agent()
+# Initialize the agent (this will trigger authentication)
+with st.spinner("Initializing services..."):
+    agent = initialize_agent()
 
 # --- Input box ---
 user_input = st.chat_input("Type your command...")
