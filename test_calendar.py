@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from utils.google_calendar_client import create_google_event
+from utils.google_calendar_client import GoogleCalendarClient
 
 # Define test details for event creation
 event_details = {
@@ -15,8 +15,11 @@ def test_create_event():
     try:
         print("Testing Google Calendar Event Creation...")
 
-        # Call the create_google_event function with attendees
-        event_link = create_google_event(
+        # Initialize the GoogleCalendarClient
+        calendar_client = GoogleCalendarClient()
+        
+        # Call the create_event method with attendees
+        event_link = calendar_client.create_event(
             summary=event_details["summary"],
             description=event_details["description"],
             start_time=event_details["start_time"],

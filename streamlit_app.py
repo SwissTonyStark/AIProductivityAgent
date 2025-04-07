@@ -45,12 +45,3 @@ if user_input:
         ):
             response = step["messages"][-1].content
             st.chat_message("assistant").markdown(response)
-
-
-# --- Additional Enhancements ---
-st.sidebar.title("Assistant Features")
-st.sidebar.markdown("""
-- **Analyze Emails**: Get the sentiment and tasks from your emails.
-- **Create Events**: Add events to Google Calendar directly.
-- **Smart Filtering**: Search emails by keyword or sentiment.
-""")

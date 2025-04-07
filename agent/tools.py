@@ -1,79 +1,171 @@
+"""
+Tools module providing various productivity-related functions for the agent.
+Includes tools for web search, email management, and calendar operations.
+"""
 import os
+from datetime import datetime
+from typing import List, Optional, Dict, Any
+
 from langchain.tools import tool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from utils.email_parser import parse_email
 from utils.gmail_client import GmailClient
 from utils.google_calendar_client import GoogleCalendarClient
-from langchain.chains import LLMChain
-from datetime import datetime
 
-# --- Tavily Search Tool ---
+# --- Web Search Tool ---
 @tool
-def tavily_tool(query: str, max_results: int = 2):
+def tavily_tool(query: str, max_results: int = 2) -> List[Dict]:
     """
-    Uses Tavily to perform a search and returns the results.
+    Performs a web search using the Tavily API and returns relevant results.
+
+    Args:
+        query: Search query string
+        max_results: Maximum number of results to return (default: 2)
+
+    Returns:
+        List of search results containing title, content and URL
+
+    Raises:
+        ValueError: If TAVILY_API_KEY environment variable is not set
     """
     tavily_api_key = os.getenv("TAVILY_API_KEY")
     if not tavily_api_key:
-        raise ValueError("TAVILY_API_KEY is missing from the environment variables.")
-    # Initialize TavilySearchResults with the API key
+        raise ValueError("TAVILY_API_KEY environment variable is required")
+    
     search_tool = TavilySearchResults(max_results=max_results, tavily_api_key=tavily_api_key)
-    search_results = search_tool.search(query)  # Assuming the search method exists
-    return search_results
+    return search_tool.search(query)
 
-# --- Email Parser Tool ---
+# --- Email Tools ---
 @tool
-def parse_email_tool(raw_email: str) -> dict:
+def parse_email_tool(raw_email: str) -> Dict:
     """
-    Parses a raw email string and extracts metadata like from, to, subject, date, and body.
-    Useful for understanding the content of incoming emails.
+    Parses a raw email string to extract key metadata.
+
+    Args:
+        raw_email: Raw email content as string
+
+    Returns:
+        Dict containing email metadata (from, to, subject, date, body)
     """
     return parse_email(raw_email)
 
-# --- Gmail: Get last N emails ---
 @tool
 def get_gmail_summary(n: int = 15) -> str:
     """
-    Fetches the last N emails and returns a summary with sender and subject.
-    """
-    client = GmailClient()
-    emails = client.get_recent_emails(max_results=n)
-    return "\n\n".join([f"From: {e['from']}\nSubject: {e['subject']}\n" for e in emails])
+    Retrieves a summary of recent Gmail messages.
 
-# --- Gmail: Search by keyword ---
+    Args:
+        n: Number of recent emails to fetch (default: 15)
+
+    Returns:
+        Formatted string containing sender and subject for each email
+    """
+    try:
+        client = GmailClient()
+        emails = client.get_recent_emails(max_results=max_results)
+        
+        if not emails:
+            return "No recent emails found."
+            
+        email_summaries = []
+        for email in emails:
+            summary = f"From: {email['from']}\nSubject: {email['subject']}\nSnippet: {email['snippet']}"
+            email_summaries.append(summary)
+            
+        return "\n\n".join(email_summaries)
+    except Exception as e:
+        return f"Error retrieving Gmail messages: {str(e)}"
+
 @tool
 def search_gmail_by_keyword(keyword: str, n: int = 15) -> str:
     """
-    Searches Gmail for emails containing the given keyword.
-    Returns up to N matches with sender and subject.
+    Searches Gmail for messages containing a specific keyword.
+
+    Args:
+        keyword: Search term to look for in emails
+        n: Maximum number of results to return (default: 15)
+
+    Returns:
+        Formatted string containing matching email details
     """
     client = GmailClient()
     emails = client.search_emails(keyword, max_results=n)
     if not emails:
         return f"No emails found containing '{keyword}'."
+    
     return "\n\n".join([
-        f"From: {e['from']}\nSubject: {e['subject']}\nSnippet: {e['snippet']}" for e in emails
+        f"From: {e['from']}\nSubject: {e['subject']}\nSnippet: {e['snippet']}" 
+        for e in emails
     ])
 
-# --- Google Calendar: Create Event ---
+# --- Calendar Tools ---
 @tool
-def create_google_event(summary: str, description: str, start_time: str, end_time: str) -> str:
+def create_google_event(
+    summary: str,
+    description: str,
+    start_time: str,
+    end_time: str,
+    attendees: Optional[List[str]] = None,
+    reminders: Optional[List[Dict[str, Any]]] = None
+) -> str:
     """
-    Creates an event in Google Calendar using the provided parameters.
+    Creates a new event in Google Calendar.
+
+    Args:
+        summary: Event title/name
+        description: Detailed event description
+        start_time: Start time in ISO format (YYYY-MM-DDTHH:MM:SS)
+        end_time: End time in ISO format (YYYY-MM-DDTHH:MM:SS)
+        attendees: Optional list of attendee email addresses
+        reminders: Optional list of reminder settings
+
+    Returns:
+        URL of the created calendar event
     """
-    
     start_dt = datetime.fromisoformat(start_time)
     end_dt = datetime.fromisoformat(end_time)
 
     client = GoogleCalendarClient()
-    response = client.create_event(summary, description, start_dt, end_dt)
-    return response
+    return client.create_event(
+        summary=summary,
+        description=description,
+        start_time=start_dt,
+        end_time=end_dt,
+        attendees=attendees,
+        reminders=reminders
+    )
 
-# --- List of tools for the agent ---
+@tool
+def get_upcoming_calendar_events(max_results: int = 10) -> str:
+    """
+    Retrieves upcoming events from Google Calendar.
+
+    Args:
+        max_results: Maximum number of events to return (default: 10)
+
+    Returns:
+        Formatted string containing upcoming event details
+    """
+    client = GoogleCalendarClient()
+    events = client.get_upcoming_events(max_results=max_results)
+    
+    if not events:
+        return "No upcoming events found."
+    
+    result = []
+    for event in events:
+        start = event.get('start', {}).get('dateTime', event.get('start', {}).get('date', 'N/A'))
+        summary = event.get('summary', 'Untitled Event')
+        result.append(f"Event: {summary}\nTime: {start}")
+    
+    return "\n\n".join(result)
+
+# Available tools for the agent
 TOOLS = [
     tavily_tool,
-    parse_email_tool,
+    parse_email_tool, 
     get_gmail_summary,
     search_gmail_by_keyword,
-    create_google_event,  # Add the Google calendar event tool
+    create_google_event,
+    get_upcoming_calendar_events
 ]

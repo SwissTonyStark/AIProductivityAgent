@@ -25,21 +25,54 @@ class GmailClient:
 
     def authenticate(self):
         """Handles OAuth2 flow and creates the Gmail API service."""
-        if os.path.exists("token.pickle"):
-            with open("token.pickle", "rb") as token:
-                self.creds = pickle.load(token)
+        token_path = "token_gmail.pickle"
+        
+        # Load existing token if available
+        if os.path.exists(token_path):
+            try:
+                with open(token_path, "rb") as token:
+                    self.creds = pickle.load(token)
+                print("Loaded existing Gmail credentials")
+            except Exception as e:
+                print(f"Error loading Gmail credentials: {e}")
+                self.creds = None
 
-        # If there are no (valid) credentials available, start the OAuth2 flow
+        # Check if credentials need to be refreshed or recreated
         if not self.creds or not self.creds.valid:
             if self.creds and self.creds.expired and self.creds.refresh_token:
-                self.creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    "credentials.json", SCOPES
-                )
-                self.creds = flow.run_local_server(port=0)
-            with open("token.pickle", "wb") as token:
-                pickle.dump(self.creds, token)
+                try:
+                    print("Refreshing expired Gmail credentials")
+                    self.creds.refresh(Request())
+                except Exception as e:
+                    print(f"Error refreshing Gmail credentials: {e}")
+                    # Force new token creation if refresh fails
+                    self.creds = None
+            
+            # If credentials are still invalid, create new ones
+            if not self.creds or not self.creds.valid:
+                print("Obtaining new Gmail credentials")
+                try:
+                    # Try with credentials_gmail_api.json
+                    if os.path.exists('credentials_gmail_api.json'):
+                        flow = InstalledAppFlow.from_client_secrets_file(
+                            'credentials_gmail_api.json', SCOPES)
+                    elif os.path.exists('credentials.json'):
+                        flow = InstalledAppFlow.from_client_secrets_file(
+                            'credentials.json', SCOPES)
+                    else:
+                        raise FileNotFoundError("No Gmail credentials file found")
+                    
+                    self.creds = flow.run_local_server(port=0)
+                except Exception as e:
+                    raise RuntimeError(f"Failed to authenticate with Gmail: {e}")
+
+            # Save valid credentials for future use
+            try:
+                with open(token_path, 'wb') as token:
+                    pickle.dump(self.creds, token)
+                    print("Gmail credentials saved successfully")
+            except Exception as e:
+                print(f"Warning: Could not save Gmail credentials: {e}")
 
         self.service = build("gmail", "v1", credentials=self.creds)
 
@@ -89,4 +122,3 @@ class GmailClient:
             emails.append({'subject': subject, 'from': sender, 'snippet': snippet})
         
         return emails
-
