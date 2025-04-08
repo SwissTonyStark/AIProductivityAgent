@@ -12,12 +12,17 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import HumanMessage, BaseMessage
 from langchain_openai import AzureChatOpenAI
+from langsmith import Client
 
 from agent.config import (
     AZURE_OPENAI_API_KEY,
     AZURE_OPENAI_ENDPOINT,
     AZURE_OPENAI_API_VERSION,
     AZURE_OPENAI_DEPLOYMENT_NAME,
+    ENABLE_LANGSMITH,
+    LANGSMITH_API_KEY,
+    LANGSMITH_PROJECT,
+    LANGSMITH_ENDPOINT,
 )
 from agent.tools import TOOLS
 
@@ -55,6 +60,17 @@ def get_agent() -> Any:
     try:
         model = get_llm_model()
         memory = MemorySaver()
+        
+        # Configure LangSmith if enabled
+        if ENABLE_LANGSMITH and LANGSMITH_API_KEY:
+            client = Client(
+                api_key=LANGSMITH_API_KEY,
+                api_url=LANGSMITH_ENDPOINT,
+            )
+            logger.info("LangSmith tracing is enabled")
+        else:
+            logger.info("LangSmith tracing is disabled")
+            
         return create_react_agent(model, TOOLS, checkpointer=memory)
     except Exception as e:
         logger.error(f"Failed to create agent: {str(e)}")

@@ -7,13 +7,14 @@ from langchain_core.messages import HumanMessage
 from langchain_openai import AzureChatOpenAI
 from agent.tools import TOOLS
 from agent.auth_manager import AuthManager
+from agent.agent_runner import run_agent
+from agent.config import toggle_langsmith, is_langsmith_enabled
 
 # --- Streamlit page config ---
 st.set_page_config(
     page_title="Productivity Agent",
-    page_icon="🤖",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_icon="��",
+    layout="wide"
 )
 
 # Custom CSS for dark theme
