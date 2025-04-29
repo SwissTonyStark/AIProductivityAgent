@@ -32,6 +32,8 @@ class AuthManager:
             "api_version": os.getenv("AZURE_OPENAI_API_VERSION"),
             "deployment_name": os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
         }
+        self.credentials_file = 'oauth_credentials.json'
+        self.token_file = 'token.pickle'
 
     def _validate_env_vars(self):
         """Validate required environment variables."""
@@ -70,10 +72,16 @@ class AuthManager:
                     creds.refresh(Request())
                 else:
                     flow = InstalledAppFlow.from_client_secrets_file(credentials_file, scopes)
-                    creds = flow.run_local_server(port=0)
+                    creds = flow.run_local_server(port=3000)
                 
                 with open(token_path, 'wb') as token:
                     pickle.dump(creds, token)
+            
+            logger.debug("Loaded credentials from token file.")
+            if creds and creds.valid:
+                logger.debug("Credentials are valid and refreshed.")
+            else:
+                logger.debug("Starting OAuth flow...")
             
             return creds
         except Exception as e:
@@ -85,17 +93,17 @@ class AuthManager:
         SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
         self.gmail_creds = self._authenticate_service(
             SCOPES, 
-            "token_gmail.pickle", 
-            'credentials_gmail_api.json'
+            self.token_file, 
+            self.credentials_file
         )
 
     def _authenticate_calendar(self):
         """Handle Google Calendar authentication."""
-        SCOPES = ['https://www.googleapis.com/auth/calendar']
+        SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events']
         self.calendar_creds = self._authenticate_service(
             SCOPES, 
-            'token_calendar.pickle', 
-            'credentials_calendar_api.json'
+            self.token_file, 
+            self.credentials_file
         )
 
     @lru_cache(maxsize=1)

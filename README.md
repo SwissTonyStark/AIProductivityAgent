@@ -6,19 +6,22 @@ An AI-powered personal assistant that integrates with your email, calendar, and 
 
 ## 🧭 Table of Contents
 
-- [🧭 Table of Contents](#-table-of-contents)
-- [🧠 Introduction](#-introduction)
-- [🛠️ Current Capabilities](#️-current-capabilities)
-- [📂 Project Structure](#-project-structure)
-- [▶️ How to Run](#️-how-to-run)
-- [📅 Development Diary](#-development-diary)
-- [💡 Future Ideas](#-future-ideas)
-- [🤖 How to Interact with the Agent](#-how-to-interact-with-the-agent)
-  - [Ask about your emails:](#ask-about-your-emails)
-  - [Request task extraction:](#request-task-extraction)
-  - [Analyze email sentiment:](#analyze-email-sentiment)
-  - [Filter emails:](#filter-emails)
-- [📬 Contact](#-contact)
+- [ProductivityAgent 📬🤖](#productivityagent-)
+  - [🧭 Table of Contents](#-table-of-contents)
+  - [🧠 Introduction](#-introduction)
+  - [🛠️ Current Capabilities](#️-current-capabilities)
+  - [📂 Project Structure](#-project-structure)
+  - [▶️ How to Run](#️-how-to-run)
+  - [📅 Development Diary](#-development-diary)
+  - [💡 Future Ideas](#-future-ideas)
+  - [🤖 How to Interact with the Agent](#-how-to-interact-with-the-agent)
+    - [Ask about your emails:](#ask-about-your-emails)
+    - [Manage your calendar:](#manage-your-calendar)
+    - [Request task extraction:](#request-task-extraction)
+    - [Analyze email sentiment:](#analyze-email-sentiment)
+    - [Filter emails:](#filter-emails)
+  - [📬 Contact](#-contact)
+  - [⚠️ Renewing Google OAuth Credentials (if expired)](#️-renewing-google-oauth-credentials-if-expired)
 
 ---
 
@@ -172,3 +175,29 @@ You can ask the agent to filter emails by specific criteria such as sender, keyw
 
 Built by Pol Fernández (pol.fernandez.blanquez@gmail.com)  
 Follow my journey on [GitHub](https://github.com/polfernandezblanquez) or LinkedIn soon.
+
+---
+
+## ⚠️ Renewing Google OAuth Credentials (if expired)
+
+If you see errors like "The OAuth client was deleted" or authentication issues with Gmail/Calendar, follow these steps:
+
+1. **Create new credentials in Google Cloud Console:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+   - Select your project or create a new one.
+   - Click on "Create credentials" > "OAuth client ID".
+   - Choose "Desktop app" as the application type.
+   - Download the JSON file.
+
+2. **Update the `oauth_credentials.json` file** in your project root with the new JSON you just downloaded.
+
+3. **Manually delete the `token.pickle` file** (if you don't delete it, the authentication flow will not work with the new client).
+
+4. **Run the token generation script:**
+   ```bash
+   python test_generate_token.py
+   ```
+   or any script that uses the AuthManager (for example, `python test_gmail.py`).
+   This will open your browser to authorize the app and generate a new valid token.
+
+That's it! Your agent should now authenticate correctly with Google.

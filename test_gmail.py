@@ -1,8 +1,10 @@
 # test_gmail.py
 
 from utils.gmail_client import GmailClient
+from agent.auth_manager import AuthManager
 
-client = GmailClient()
+auth_manager = AuthManager()
+client = GmailClient(auth_manager)
 emails = client.get_recent_emails()
 
 print("\n📥 Gmail Inbox:")
