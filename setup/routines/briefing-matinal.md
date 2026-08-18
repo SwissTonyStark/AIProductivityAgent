@@ -1,7 +1,7 @@
 # Routine: Briefing matinal
 
 **Crear en:** claude.ai/code/routines (o `/schedule` en Claude Code)
-**Horario sugerido:** días laborables a las 07:30 (Europe/Madrid)
+**Horario sugerido:** días laborables a las 07:30 (Europe/Zurich)
 **Conectores necesarios:** Gmail, Google Calendar — quita el resto de esta routine.
 
 ## Prompt

@@ -1,7 +1,7 @@
 # Routine: Revisión dominical
 
 **Crear en:** claude.ai/code/routines
-**Horario sugerido:** domingos a las 19:00 (Europe/Madrid)
+**Horario sugerido:** domingos a las 19:00 (Europe/Zurich)
 **Conectores necesarios:** Gmail, Google Calendar.
 
 ## Prompt
