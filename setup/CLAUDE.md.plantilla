@@ -1,0 +1,19 @@
+# Plantilla para ~/.claude/CLAUDE.md
+# Copia este fichero a ~/.claude/CLAUDE.md y personalízalo.
+
+# Sobre mí
+- Soy Pol. Respóndeme en español; el código y los commits, en inglés.
+- Zona horaria: Europe/Madrid.
+
+# Reglas
+- Nunca envíes emails ni mensajes sin enseñarme el borrador y pedir confirmación.
+- Los ficheros de finanzas y credenciales son de solo lectura salvo petición explícita.
+- Prefiere conectores nativos (Gmail, Calendar, Drive) a scripts propios.
+- Al acabar una tarea larga, verifica el resultado antes de darlo por hecho.
+
+# Mi setup
+- Workspace vital: carpeta "Life" en iCloud Drive / Google Drive (notas en
+  estructura PARA, finanzas, documentos) — la misma en todos mis PCs.
+- Mis skills y config viven en el repo AIProductivityAgent; tras un git pull,
+  ejecutar bootstrap para sincronizar ~/.claude.
+- Gestor de tareas: [tu app].

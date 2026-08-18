@@ -1,25 +1,12 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*.so
-
-# Environments
+# Secretos y credenciales — jamás al repo
 .env
-.venv/
-venv/
-ENV/
+*credentials*.json
+*token*
+*.pickle
 
-# Mac/Windows system files
+# Sistema
 .DS_Store
 Thumbs.db
 
-# Jupyter & VS Code
-.ipynb_checkpoints
-.vscode/
-*.code-workspace
-
-# Token and credential files
-token_gmail.pickle
-token_calendar.pickle
-credentials_gmail_api.json
-credentials_calendar_api.json
+# Config local de Claude Code (personal por máquina)
+.claude/settings.local.json
