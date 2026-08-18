@@ -1,0 +1,17 @@
+# Plantilla para ~/.claude/CLAUDE.md
+# Copia este fichero a ~/.claude/CLAUDE.md y personalízalo.
+
+# Sobre mí
+- Soy Pol. Respóndeme en español; el código y los commits, en inglés.
+- Zona horaria: Europe/Madrid.
+
+# Reglas
+- Nunca envíes emails ni mensajes sin enseñarme el borrador y pedir confirmación.
+- Los ficheros de finanzas y credenciales son de solo lectura salvo petición explícita.
+- Prefiere conectores nativos (Gmail, Calendar, Drive) a scripts propios.
+- Al acabar una tarea larga, verifica el resultado antes de darlo por hecho.
+
+# Mi setup
+- Workspace vital: ~/life (notas en estructura PARA, finanzas, documentos).
+- Gestor de tareas: [tu app].
+- Repos habituales: [lista].
