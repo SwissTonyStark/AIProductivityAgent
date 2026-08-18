@@ -53,7 +53,7 @@ claude   # login con tu cuenta de claude.ai — nunca API key
 
 ## Historia
 
-Este repo fue **ProductivityAgent** (2025): un asistente hecho a mano con LangChain + Azure OpenAI + OAuth de Gmail/Calendar. Todo lo que hacía está hoy cubierto de forma nativa por conectores, skills y Routines de Claude — el mapa de migración está en el §3 del playbook. El código antiguo vive en el historial de git (tag [`legacy-productivityagent`](../../tree/legacy-productivityagent)).
+Este repo fue **ProductivityAgent** (2025): un asistente hecho a mano con LangChain + Azure OpenAI + OAuth de Gmail/Calendar. Todo lo que hacía está hoy cubierto de forma nativa por conectores, skills y Routines de Claude — el mapa de migración está en el §3 del playbook. El código antiguo vive en el historial de git ([último commit del ProductivityAgent](../../tree/1475fd2d0367959a79a274b46816888fb24c123a)).
 
 ---
 
